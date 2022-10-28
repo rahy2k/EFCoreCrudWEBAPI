@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "DbFirst": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:60202;http://localhost:60204"
+    }
+  }
+}
