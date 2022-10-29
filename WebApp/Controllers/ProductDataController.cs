@@ -82,34 +82,28 @@ namespace WebApp.Controllers
         public IActionResult Edit(int id)
         {
             ProductModel product = new ProductModel();
-            var model = _db.Products.Find(id);
-            string strData = JsonSerializer.Serialize(id);
-            StringContent content = new StringContent(strData, Encoding.UTF8, "application/json");
-            var response = client.PostAsync(client.BaseAddress + "/product/{id?}", content).Result;
+            
+            var response = client.GetAsync(client.BaseAddress + "/product/"+id).Result;
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+                string strData = response.Content.ReadAsStringAsync().Result;
+                product = JsonSerializer.Deserialize<ProductModel>(strData);
             }
             ViewBag.Categories = GetCategories();
-            return View("Create", product);
+
+            return View("Create",product);
         }
 
         [HttpPost]
         public IActionResult Edit(ProductModel model)
         {
-            if (ModelState.IsValid)
-            {
-                Product product = new Product
-                {
-                    ProductId = model.ProductId,
-                    Name = model.Name,
-                    Description = model.Description,
-                    UnitPrice = model.UnitPrice,
-                    CategoryId = model.CategoryId
-                };
-                string strData = JsonSerializer.Serialize(product);
+           
+                string strData = JsonSerializer.Serialize(model);
                 StringContent content = new StringContent(strData, Encoding.UTF8, "application/json");
-                var response = client.PostAsync(client.BaseAddress + "/product", content).Result;
+                var response = client.PutAsync(client.BaseAddress + "/product/"+model.ProductId, content).Result;
+            if (response.IsSuccessStatusCode)
+            {
+
                 TempData["Message"] = "Record Has been updated!";
                 return RedirectToAction("Index");
             }
@@ -121,11 +115,15 @@ namespace WebApp.Controllers
         public IActionResult Delete(int id)
         {
            
-                string strData = JsonSerializer.Serialize(id);
-                StringContent content = new StringContent(strData, Encoding.UTF8, "application/json");
-                var response = client.PostAsync(client.BaseAddress + "/product/{id?}", content).Result;
-         
-            return RedirectToAction("Index");
+           var response = client.DeleteAsync(client.BaseAddress + "/product/"+id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Message"] = "Record Has been deleted!";
+                return RedirectToAction("Index");
+
+            }
+            else
+                return null;
         }
 
     }
