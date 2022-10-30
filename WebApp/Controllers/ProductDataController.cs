@@ -123,7 +123,7 @@ namespace WebApp.Controllers
 
             }
             else
-                return null;
+                return RedirectToAction("Index");
         }
 
     }
