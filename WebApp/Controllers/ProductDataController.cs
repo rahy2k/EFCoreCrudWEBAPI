@@ -51,7 +51,7 @@ namespace WebApp.Controllers
         public async Task<IActionResult> Index()
         {
             IEnumerable<ProductModel> data = new List<ProductModel>();
-            var response = await client.GetAsync(client.BaseAddress + "/product"); //async
+            var response = await client.GetAsync(client.BaseAddress + "/product/getall"); //async
             if (response.IsSuccessStatusCode)
             {
                 string strData = await response.Content.ReadAsStringAsync(); //async
@@ -71,7 +71,7 @@ namespace WebApp.Controllers
         {
             string strData = JsonSerializer.Serialize(model);
             StringContent content = new StringContent(strData, Encoding.UTF8, "application/json");
-            var response = client.PostAsync(client.BaseAddress + "/product", content).Result;
+            var response = client.PostAsync(client.BaseAddress + "/product/add", content).Result;
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -83,7 +83,7 @@ namespace WebApp.Controllers
         {
             ProductModel product = new ProductModel();
             
-            var response = client.GetAsync(client.BaseAddress + "/product/"+id).Result;
+            var response = client.GetAsync(client.BaseAddress + "/product/get/"+id).Result;
             if (response.IsSuccessStatusCode)
             {
                 string strData = response.Content.ReadAsStringAsync().Result;
@@ -100,7 +100,7 @@ namespace WebApp.Controllers
            
                 string strData = JsonSerializer.Serialize(model);
                 StringContent content = new StringContent(strData, Encoding.UTF8, "application/json");
-                var response = client.PutAsync(client.BaseAddress + "/product/"+model.ProductId, content).Result;
+                var response = client.PutAsync(client.BaseAddress + "/product/update/"+model.ProductId, content).Result;
             if (response.IsSuccessStatusCode)
             {
 
@@ -115,7 +115,7 @@ namespace WebApp.Controllers
         public IActionResult Delete(int id)
         {
            
-           var response = client.DeleteAsync(client.BaseAddress + "/product/"+id).Result;
+           var response = client.DeleteAsync(client.BaseAddress + "/product/delete/"+id).Result;
             if (response.IsSuccessStatusCode)
             {
                 TempData["Message"] = "Record Has been deleted!";
